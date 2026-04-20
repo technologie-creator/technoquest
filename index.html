@@ -10,12 +10,15 @@
     <nav class="navbar">
         <div class="nav-container">
             <h1 class="logo">📚 Brevet Technologie</h1>
-            <ul class="nav-links">
-                <li><a href="index.html" class="active">Accueil</a></li>
-                <li><a href="quiz.html">Quiz</a></li>
-                <li><a href="fiches.html">Fiches</a></li>
-                <li><a href="#progression">Progression</a></li>
-            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="quiz.html">Quiz</a></li>
+                    <li><a href="fiches.html">Fiches</a></li>
+                    <li><a href="#progression">Progression</a></li>
+                </ul>
+                <button id="theme-toggle" class="theme-toggle" title="Mode sombre" onclick="toggleDarkMode()">🌙</button>
+            </div>
         </div>
     </nav>
 
@@ -142,7 +145,7 @@
     </div>
 
     <footer>
-        <p>Brevet Technologie © 2024 | Entraînement gratuit pour le brevet des collèges</p>
+        <p>Brevet Technologie © 2026 | Entraînement gratuit pour le brevet des collèges</p>
     </footer>
 
     <script src="script.js"></script>

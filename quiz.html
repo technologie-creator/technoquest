@@ -10,18 +10,28 @@
     <nav class="navbar">
         <div class="nav-container">
             <h1 class="logo">📚 Brevet Technologie</h1>
-            <ul class="nav-links">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="quiz.html" class="active">Quiz</a></li>
-                <li><a href="fiches.html">Fiches</a></li>
-            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="quiz.html" class="active">Quiz</a></li>
+                    <li><a href="fiches.html">Fiches</a></li>
+                </ul>
+                <button id="theme-toggle" class="theme-toggle" title="Mode sombre" onclick="toggleDarkMode()">🌙</button>
+            </div>
         </div>
     </nav>
 
     <div class="container">
         <div id="quiz-container" class="quiz-container">
             <div class="quiz-header">
-                <h2 id="theme-title"></h2>
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div>
+                        <h2 id="theme-title"></h2>
+                    </div>
+                    <div class="quiz-timer">
+                        <span id="timer-display">20:00</span>
+                    </div>
+                </div>
                 <div class="quiz-progress">
                     <span id="question-counter">1/20</span>
                     <div class="progress-bar">
@@ -31,7 +41,10 @@
             </div>
 
             <div class="question-section">
-                <h3 id="question-text"></h3>
+                <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
+                    <h3 id="question-text" style="flex: 1;"></h3>
+                    <button id="favorite-btn" class="favorite-btn" title="Ajouter aux favoris" onclick="toggleFavorite()">⭐</button>
+                </div>
                 <div class="answers-grid" id="answers-grid"></div>
             </div>
 
@@ -101,6 +114,7 @@
 
             document.getElementById('theme-title').textContent = themeTitles[currentTheme];
             displayQuestion();
+            startTimer(20); // Démarrer le timer de 20 minutes
         }
 
         function displayQuestion() {
@@ -129,6 +143,15 @@
 
             document.getElementById('prev-btn').disabled = currentQuestion === 0;
             document.getElementById('next-btn').textContent = currentQuestion === quizQuestions.length - 1 ? 'Terminer' : 'Suivant →';
+            
+            // Mettre à jour l'état du bouton favoris
+            const favBtn = document.getElementById('favorite-btn');
+            const favorites = getFavorites(currentTheme);
+            if (favorites.includes(currentQuestion)) {
+                favBtn.classList.add('marked');
+            } else {
+                favBtn.classList.remove('marked');
+            }
         }
 
         function selectAnswer(index) {
@@ -152,7 +175,25 @@
             }
         }
 
+        // Fonction pour ajouter/enlever un favoris
+        function toggleFavorite() {
+            const favorites = getFavorites(currentTheme);
+            const index = favorites.indexOf(currentQuestion);
+            
+            if (index > -1) {
+                favorites.splice(index, 1); // Enlever
+            } else {
+                favorites.push(currentQuestion); // Ajouter
+            }
+            
+            localStorage.setItem(`favorites_${currentTheme}`, JSON.stringify(favorites));
+            
+            // Rafraîchir l'affichage
+            displayQuestion();
+        }
+
         function showResults() {
+            stopTimer(); // Arrêter le timer
             let correctCount = 0;
             userAnswers.forEach((answer, index) => {
                 if (answer === quizQuestions[index].correct) {
