@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brevet Technologie - Entraînement</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">📚 Brevet Technologie</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Accueil</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+                <li><a href="fiches.html">Fiches</a></li>
+                <li><a href="#progression">Progression</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="hero">
+            <h1>Préparez-vous au Brevet ! 🎯</h1>
+            <p>Entraînez-vous avec des QCM sur tous les thèmes de technologie</p>
+        </header>
+
+        <section class="stats-section" id="progression">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <h3>Votre progression</h3>
+                <p id="progression-text">Aucun quiz commencé</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <h3>Meilleur score</h3>
+                <p id="best-score">-</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <h3>Quiz complétés</h3>
+                <p id="completed-quizzes">0</p>
+            </div>
+        </section>
+
+        <section class="progress-detail-section">
+            <h2>Détail par thème</h2>
+            <div id="progress-detail" class="progress-detail-grid">
+                <p style="color:var(--gray-400);font-size:.9rem;">Complétez des quiz pour voir votre progression ici.</p>
+            </div>
+        </section>
+
+        <section class="themes-section">
+            <h2>Choisissez un thème</h2>
+            <div class="themes-grid">
+                <div class="theme-card" onclick="startQuiz('materiaux')">
+                    <div class="theme-icon">🔧</div>
+                    <h3>Matériaux et Structures</h3>
+                    <p>Propriétés des matériaux, résistance, structures</p>
+                    <div class="theme-stats">
+                        <span id="score-materiaux">-</span>
+                    </div>
+                </div>
+
+                <div class="theme-card" onclick="startQuiz('energie')">
+                    <div class="theme-icon">⚡</div>
+                    <h3>Énergie et Puissance</h3>
+                    <p>Sources d'énergie, conversion, efficacité énergétique</p>
+                    <div class="theme-stats">
+                        <span id="score-energie">-</span>
+                    </div>
+                </div>
+
+                <div class="theme-card" onclick="startQuiz('automatismes')">
+                    <div class="theme-icon">🤖</div>
+                    <h3>Automatismes et Programmation</h3>
+                    <p>Systèmes automatisés, programmation, algorithmes</p>
+                    <div class="theme-stats">
+                        <span id="score-automatismes">-</span>
+                    </div>
+                </div>
+
+                <div class="theme-card" onclick="startQuiz('developpement')">
+                    <div class="theme-icon">🌍</div>
+                    <h3>Développement Durable</h3>
+                    <p>Environnement, recyclage, éco-conception</p>
+                    <div class="theme-stats">
+                        <span id="score-developpement">-</span>
+                    </div>
+                </div>
+
+                <div class="theme-card" onclick="startQuiz('informatique')">
+                    <div class="theme-icon">💻</div>
+                    <h3>Informatique et Réseaux</h3>
+                    <p>Internet, données, cybersécurité, réseaux</p>
+                    <div class="theme-stats">
+                        <span id="score-informatique">-</span>
+                    </div>
+                </div>
+
+                <div class="theme-card" onclick="startQuiz('design')">
+                    <div class="theme-icon">🏗️</div>
+                    <h3>Design et Innovation</h3>
+                    <p>Processus de conception, innovation, prototypage</p>
+                    <div class="theme-stats">
+                        <span id="score-design">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <h2>Comment ça marche ?</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-number">1</div>
+                    <h3>Choisissez un thème</h3>
+                    <p>Sélectionnez le domaine que vous voulez réviser</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">2</div>
+                    <h3>Répondez aux questions</h3>
+                    <p>20 QCM par thème avec 4 réponses possibles</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">3</div>
+                    <h3>Obtenez des explications</h3>
+                    <p>Chaque réponse est expliquée en détail</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">4</div>
+                    <h3>Suivez votre progression</h3>
+                    <p>Vos scores sont sauvegardés automatiquement</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Brevet Technologie © 2024 | Entraînement gratuit pour le brevet des collèges</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const THEMES = [
+            { id: 'materiaux',     label: '🔧 Matériaux' },
+            { id: 'energie',       label: '⚡ Énergie' },
+            { id: 'automatismes',  label: '🤖 Automatismes' },
+            { id: 'developpement', label: '🌍 Dév. Durable' },
+            { id: 'informatique',  label: '💻 Informatique' },
+            { id: 'design',        label: '🏗️ Design' }
+        ];
+
+        function scoreColor(s) {
+            if (s >= 80) return '#16a34a';
+            if (s >= 50) return '#d97706';
+            return '#dc2626';
+        }
+
+        function loadProgress() {
+            const scores = JSON.parse(localStorage.getItem('brevetsScores')) || {};
+            let totalScore = 0, completedCount = 0, bestScore = 0;
+
+            THEMES.forEach(({ id }) => {
+                if (scores[id] !== undefined) {
+                    const s = scores[id];
+                    totalScore += s;
+                    completedCount++;
+                    bestScore = Math.max(bestScore, s);
+
+                    // Badge score sur chaque carte thème
+                    const el = document.getElementById(`score-${id}`);
+                    if (el) {
+                        el.textContent = `${s}%`;
+                        el.style.background = scoreColor(s) + '22';
+                        el.style.color = scoreColor(s);
+                    }
+                }
+            });
+
+            const avgScore = completedCount > 0 ? Math.round(totalScore / completedCount) : 0;
+
+            // Stats globales
+            document.getElementById('completed-quizzes').textContent = completedCount + ' / 6';
+            document.getElementById('progression-text').textContent =
+                completedCount > 0 ? `${avgScore}% de moyenne` : 'Aucun quiz commencé';
+
+            // Barre de progression globale (délai pour l'animation CSS)
+            setTimeout(() => {
+                document.getElementById('progress-fill').style.width = avgScore + '%';
+            }, 100);
+
+            document.getElementById('best-score').textContent =
+                bestScore > 0 ? `${bestScore}%` : '–';
+
+            // Grille de progression détaillée
+            const grid = document.getElementById('progress-detail');
+            if (!grid) return;
+            grid.innerHTML = '';
+            THEMES.forEach(({ id, label }) => {
+                const s = scores[id];
+                const done = s !== undefined;
+                const pct = done ? s : 0;
+                const color = done ? scoreColor(s) : '#9ca3af';
+                grid.innerHTML += `
+                    <div class="prog-row">
+                        <span class="prog-label">${label}</span>
+                        <div class="prog-bar-wrap">
+                            <div class="prog-bar-fill" style="width:${pct}%; background:${color}"></div>
+                        </div>
+                        <span class="prog-pct" style="color:${color}">${done ? pct + '%' : '–'}</span>
+                    </div>`;
+            });
+        }
+
+        function startQuiz(theme) {
+            window.location.href = `quiz.html?theme=${theme}`;
+        }
+
+        window.addEventListener('load', loadProgress);
+    </script>
+</body>
+</html>

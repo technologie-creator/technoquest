@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Brevet Technologie</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">📚 Brevet Technologie</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="quiz.html" class="active">Quiz</a></li>
+                <li><a href="fiches.html">Fiches</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="quiz-container" class="quiz-container">
+            <div class="quiz-header">
+                <h2 id="theme-title"></h2>
+                <div class="quiz-progress">
+                    <span id="question-counter">1/20</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h3 id="question-text"></h3>
+                <div class="answers-grid" id="answers-grid"></div>
+            </div>
+
+            <div class="quiz-controls">
+                <button id="prev-btn" class="btn btn-secondary" onclick="previousQuestion()">← Précédent</button>
+                <button id="next-btn" class="btn btn-primary" onclick="nextQuestion()">Suivant →</button>
+            </div>
+        </div>
+
+        <div id="results-container" class="results-container" style="display: none;">
+            <div class="results-card">
+                <h2>Résultats</h2>
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span id="final-score">0</span>%
+                    </div>
+                </div>
+                <p id="score-message"></p>
+                
+                <div class="results-stats">
+                    <div class="result-stat">
+                        <span class="stat-label">Bonnes réponses</span>
+                        <span class="stat-value" id="correct-count">0</span>
+                    </div>
+                    <div class="result-stat">
+                        <span class="stat-label">Mauvaises réponses</span>
+                        <span class="stat-value" id="wrong-count">0</span>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Revoir vos réponses</h3>
+                    <div id="review-container"></div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn btn-primary" onclick="location.href='index.html'">Retour à l'accueil</button>
+                    <button class="btn btn-secondary" onclick="location.reload()">Recommencer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="questions.js"></script>
+    <script>
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let currentTheme = '';
+        let quizQuestions = [];
+
+        function initQuiz() {
+            const params = new URLSearchParams(window.location.search);
+            currentTheme = params.get('theme') || 'materiaux';
+            
+            quizQuestions = allQuestions[currentTheme] || [];
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            
+            const themeTitles = {
+                'materiaux': '🔧 Matériaux et Structures',
+                'energie': '⚡ Énergie et Puissance',
+                'automatismes': '🤖 Automatismes et Programmation',
+                'developpement': '🌍 Développement Durable',
+                'informatique': '💻 Informatique et Réseaux',
+                'design': '🏗️ Design et Innovation'
+            };
+
+            document.getElementById('theme-title').textContent = themeTitles[currentTheme];
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = quizQuestions[currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            document.getElementById('question-counter').textContent = `${currentQuestion + 1}/${quizQuestions.length}`;
+            
+            const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+
+            const answersGrid = document.getElementById('answers-grid');
+            answersGrid.innerHTML = '';
+
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.onclick = () => selectAnswer(index);
+                
+                if (userAnswers[currentQuestion] === index) {
+                    button.classList.add('selected');
+                }
+                
+                answersGrid.appendChild(button);
+            });
+
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = currentQuestion === quizQuestions.length - 1 ? 'Terminer' : 'Suivant →';
+        }
+
+        function selectAnswer(index) {
+            userAnswers[currentQuestion] = index;
+            displayQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizQuestions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function showResults() {
+            let correctCount = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === quizQuestions[index].correct) {
+                    correctCount++;
+                }
+            });
+
+            const score = Math.round((correctCount / quizQuestions.length) * 100);
+            
+            // Sauvegarder le score
+            const scores = JSON.parse(localStorage.getItem('brevetsScores')) || {};
+            scores[currentTheme] = score;
+            localStorage.setItem('brevetsScores', JSON.stringify(scores));
+
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('wrong-count').textContent = quizQuestions.length - correctCount;
+
+            const messages = {
+                90: '🏆 Excellent ! Vous maîtrisez ce thème !',
+                70: '👍 Très bien ! Continuez vos révisions',
+                50: '📚 Pas mal, mais il y a encore du travail',
+                0: '💪 Continuez vos efforts !'
+            };
+
+            let message = messages[0];
+            if (score >= 90) message = messages[90];
+            else if (score >= 70) message = messages[70];
+            else if (score >= 50) message = messages[50];
+
+            document.getElementById('score-message').textContent = message;
+
+            // Afficher les réponses
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            quizQuestions.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.correct;
+                const reviewItem = document.createElement('div');
+                reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+                
+                reviewItem.innerHTML = `
+                    <div class="review-question">
+                        <strong>Question ${index + 1}:</strong> ${q.question}
+                    </div>
+                    <div class="review-answer">
+                        <p><strong>Votre réponse:</strong> ${q.answers[userAnswers[index]]}</p>
+                        <p><strong>Bonne réponse:</strong> ${q.answers[q.correct]}</p>
+                        <p><strong>Explication:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+                
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+        window.addEventListener('load', initQuiz);
+    </script>
+</body>
+</html>
