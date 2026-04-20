@@ -24,13 +24,33 @@
     <div class="container">
         <div id="quiz-container" class="quiz-container">
             <div class="quiz-header">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
                     <div>
                         <h2 id="theme-title"></h2>
                     </div>
                     <div class="quiz-timer">
                         <span id="timer-display">20:00</span>
                     </div>
+                </div>
+
+                <div class="quiz-options">
+                    <div class="option-block">
+                        <label for="difficulty-select">Niveau</label>
+                        <select id="difficulty-select" onchange="applyFilters()">
+                            <option value="all">Tous niveaux</option>
+                            <option value="easy">Facile</option>
+                            <option value="medium">Intermédiaire</option>
+                            <option value="hard">Difficile</option>
+                        </select>
+                    </div>
+                    <div class="option-block search-block">
+                        <label for="search-input">Rechercher</label>
+                        <input id="search-input" type="search" placeholder="Mot-clé..." oninput="applyFilters()" autocomplete="off">
+                    </div>
+                </div>
+                <p id="filter-message" class="filter-message">Affiche toutes les questions du thème.</p>
+                <div id="no-results" class="no-results" style="display:none;">
+                    <p>Aucune question trouvée. Essayez un autre mot-clé ou niveau.</p>
                 </div>
                 <div class="quiz-progress">
                     <span id="question-counter">1/20</span>
@@ -95,13 +115,13 @@
         let userAnswers = [];
         let currentTheme = '';
         let quizQuestions = [];
+        let allQuizQuestions = [];
+        let currentDifficulty = 'all';
+        let currentSearch = '';
 
         function initQuiz() {
             const params = new URLSearchParams(window.location.search);
             currentTheme = params.get('theme') || 'materiaux';
-            
-            quizQuestions = allQuestions[currentTheme] || [];
-            userAnswers = new Array(quizQuestions.length).fill(null);
             
             const themeTitles = {
                 'materiaux': '🔧 Matériaux et Structures',
@@ -113,8 +133,66 @@
             };
 
             document.getElementById('theme-title').textContent = themeTitles[currentTheme];
-            displayQuestion();
+            currentDifficulty = 'all';
+            currentSearch = '';
+            document.getElementById('difficulty-select').value = 'all';
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-message').textContent = 'Affiche toutes les questions du thème.';
+
+            const rawQuestions = allQuestions[currentTheme] || [];
+            allQuizQuestions = rawQuestions.map((question, index) => ({
+                ...question,
+                difficulty: question.difficulty || getDefaultDifficulty(index, rawQuestions.length)
+            }));
+
+            applyFilters();
             startTimer(20); // Démarrer le timer de 20 minutes
+        }
+
+        function getDefaultDifficulty(index, length) {
+            const chunk = Math.ceil(length / 3);
+            if (index < chunk) return 'easy';
+            if (index < chunk * 2) return 'medium';
+            return 'hard';
+        }
+
+        function applyFilters() {
+            currentDifficulty = document.getElementById('difficulty-select').value;
+            currentSearch = document.getElementById('search-input').value.trim().toLowerCase();
+
+            quizQuestions = allQuizQuestions.filter(q => {
+                const matchesDifficulty = currentDifficulty === 'all' || q.difficulty === currentDifficulty;
+                const matchesSearch = currentSearch === '' || q.question.toLowerCase().includes(currentSearch);
+                return matchesDifficulty && matchesSearch;
+            });
+
+            if (quizQuestions.length === 0) {
+                document.getElementById('quiz-container').style.display = 'none';
+                document.getElementById('results-container').style.display = 'none';
+                const noResults = document.getElementById('no-results');
+                if (noResults) noResults.style.display = 'block';
+                document.getElementById('filter-message').textContent = 'Aucune question ne correspond à votre recherche ou niveau.';
+                return;
+            }
+
+            const noResults = document.getElementById('no-results');
+            if (noResults) noResults.style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            currentQuestion = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            updateFilterMessage();
+            displayQuestion();
+        }
+
+        function updateFilterMessage() {
+            const label = document.getElementById('filter-message');
+            const difficultyLabel = currentDifficulty === 'all' ? 'Tous niveaux' : currentDifficulty === 'easy' ? 'Facile' : currentDifficulty === 'medium' ? 'Intermédiaire' : 'Difficile';
+            if (currentSearch === '') {
+                label.textContent = `Filtre : ${difficultyLabel}`;
+            } else {
+                label.textContent = `Filtre : ${difficultyLabel} • Recherche : "${currentSearch}"`;
+            }
         }
 
         function displayQuestion() {
