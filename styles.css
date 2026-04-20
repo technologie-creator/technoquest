@@ -361,9 +361,53 @@ body {
     margin-bottom: 2.5rem;
 }
 
+.glossary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.glossary-search {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    min-width: 260px;
+    flex: 1;
+}
+
+.glossary-search label {
+    font-size: .9rem;
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.glossary-search input {
+    width: 100%;
+    padding: .75rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font: inherit;
+}
+
+.glossary-actions {
+    display: flex;
+    align-items: center;
+}
+
+.glossary-count {
+    margin-bottom: 1rem;
+    color: var(--gray-600);
+    font-size: .95rem;
+}
+
 .fiche-card {
-    background: #fff;
-    border: 1px solid var(--gray-200);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
