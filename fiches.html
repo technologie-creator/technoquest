@@ -228,6 +228,83 @@
         <p>Brevet Technologie © 2024 | Entraînement gratuit pour le brevet des collèges</p>
     </footer>
 
+    <!-- Modal pour fiches détaillées -->
+    <div id="detail-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modal-title">Titre</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>Contenu</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de données des fiches détaillées
+        const fichesDetaillees = {
+            'Adresse IP': {
+                titre: 'Adresse IP (Internet Protocol)',
+                contenu: '<p><strong>Définition :</strong> Identifie de manière unique chaque appareil connecté à un réseau informatique ou à internet.</p><p><strong>Format :</strong> IPv4 (xxx.xxx.xxx.xxx) ou IPv6 (format plus long)</p><p><strong>Exemple :</strong> 192.168.1.1</p><p><strong>Rôle :</strong> Permet le routage des données entre les appareils en spécifiant l\'adresse source et destination.</p>'
+            },
+            'Algorithme': {
+                titre: 'Algorithme',
+                contenu: '<p><strong>Définition :</strong> Procédure étape par étape pour résoudre un problème ou accomplir une tâche.</p><p><strong>Caractéristiques :</strong></p><ul style="margin-left:1rem;"><li>Séquence logique d\'instructions</li><li>Début et fin clairs</li><li>Peut inclure des boucles et conditions</li></ul><p><strong>Exemple :</strong> Algorithme pour trier une liste, faire une recette de cuisine.</p>'
+            },
+            'Automatisme': {
+                titre: 'Automatisme et Systèmes Automatisés',
+                contenu: '<p><strong>Définition :</strong> Système capable de fonctionner indépendamment après sa programmation, sans intervention humaine continue.</p><p><strong>Composants :</strong></p><ul style="margin-left:1rem;"><li>Capteurs (détection)</li><li>Contrôleurs (traitement logique)</li><li>Actionneurs (exécution)</li></ul><p><strong>Exemples :</strong> Ascenseur, lave-linge, feu tricolore.</p>'
+            },
+            'Capteur': {
+                titre: 'Capteur',
+                contenu: '<p><strong>Définition :</strong> Dispositif qui détecte une grandeur physique et la transforme en signal exploitable (électrique généralement).</p><p><strong>Types courants :</strong></p><ul style="margin-left:1rem;"><li>Capteur de température</li><li>Capteur de lumière (LDR)</li><li>Capteur de proximité</li><li>Capteur de pression</li></ul><p><strong>Signal de sortie :</strong> Converti en information utilisable par le contrôleur.</p>'
+            },
+            'Rendement': {
+                titre: 'Rendement Énergétique',
+                contenu: '<p><strong>Définition :</strong> Rapport entre l\'énergie utile obtenue et l\'énergie totale consommée.</p><p><strong>Formule :</strong> η = (Énergie utile / Énergie totale) × 100%</p><p><strong>Exemples :</strong></p><ul style="margin-left:1rem;"><li>Ampoule incandescente : ~5% (95% perdus en chaleur)</li><li>LED : ~90%</li><li>Moteur mécanique : ~85%</li></ul><p><strong>Objectif :</strong> Augmenter le rendement pour réduire la consommation.</p>'
+            },
+            'Densité': {
+                titre: 'Densité d\'un Matériau',
+                contenu: '<p><strong>Définition :</strong> Rapport entre la masse d\'un objet et son volume.</p><p><strong>Formule :</strong> ρ = m / V</p><p><strong>Unité :</strong> kg/m³ ou g/cm³</p><p><strong>Exemples :</strong></p><ul style="margin-left:1rem;"><li>Eau : 1 g/cm³</li><li>Aluminium : 2.7 g/cm³</li><li>Acier : 7.8 g/cm³</li><li>Bois : 0.5-0.9 g/cm³</li></ul><p><strong>Application :</strong> Choisir des matériaux légers pour réduire la masse.</p>'
+            },
+            'Structure en treillis': {
+                titre: 'Structure en Treillis',
+                contenu: '<p><strong>Définition :</strong> Assemblage de barres minces formant des triangles pour obtenir légèreté et grande résistance.</p><p><strong>Avantages :</strong></p><ul style="margin-left:1rem;"><li>Légère (peu de matière)</li><li>Très résistante</li><li>Répartition efficace des efforts</li></ul><p><strong>Exemples :</strong> Ponts, tours Eiffel, structures aéronautiques.</p><p><strong>Principe :</strong> Le triangle est la forme la plus rigide, contrairement au rectangle.</p>'
+            }
+        };
+
+        function openModal(terme) {
+            const fiche = fichesDetaillees[terme] || { 
+                titre: terme,
+                contenu: '<p>Fiche détaillée à ajouter...</p>'
+            };
+            
+            document.getElementById('modal-title').textContent = fiche.titre;
+            document.getElementById('modal-body').innerHTML = fiche.contenu;
+            document.getElementById('detail-modal').classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (event && event.target.id !== 'detail-modal') return;
+            document.getElementById('detail-modal').classList.remove('show');
+        }
+
+        // Rendre les termes du glossaire cliquables
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.glossaire-entry .fiche-header h2').forEach(el => {
+                el.style.cursor = 'pointer';
+                el.style.textDecoration = 'underline';
+                el.addEventListener('click', function(e) {
+                    openModal(this.textContent);
+                });
+            });
+        });
+    </script>
+
     <script>
         function getGlossaryCount() {
             return document.querySelectorAll('.glossaire-entry').length;
